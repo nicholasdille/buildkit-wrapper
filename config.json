@@ -1,0 +1,16 @@
+{
+  "auths": {
+    "registry.gitlab.com": {
+      "auth": "bmljaG9sYXNkaWxsZTpfNzliTHh4eGpFQ1FCWHkzZzRjbw=="
+    },
+    "registry.haufe.io": {
+      "auth": "ZGlsbGVuOkkxOUJyb2swMw=="
+    }
+  },
+  "HttpHeaders": {
+    "User-Agent": "Docker-Client/19.03.5 (linux)"
+  },
+  "psFormat": "table {{.ID}}\\t{{.Names}}\\t{{.Image}}\\t{{.Status}}",
+  "imagesFormat": "table {{.ID}}\\t{{.Repository}}\\t{{.Tag}}\\t{{.Size}}",
+  "servicesFormat": "table {{.ID}}\\t{{.Name}}\\t{{.Image}}\\t{{.Mode}}\\t{{.Replicas}}"
+}
