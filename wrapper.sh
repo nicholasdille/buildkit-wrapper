@@ -138,7 +138,7 @@ docker_build() {
 
     DOCKER_BUILD_TARGET_PARAM=""
     if [[ -n "${DOCKER_BUILD_TARGET}" ]]; then
-        DOCKER_BUILD_TARGET_PARAM="-opt target:${DOCKER_BUILD_TARGET}"
+        DOCKER_BUILD_TARGET_PARAM="--opt target:${DOCKER_BUILD_TARGET}"
     fi
 
     DOCKER_BUILD_NAME=""
