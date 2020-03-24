@@ -129,6 +129,9 @@ docker_login() {
     echo "${CONFIG}" | \
         jq \
             --arg registry ${REGISTRY} \
+            'delpaths([["auths", ($registry)]])' |
+        jq \
+            --arg registry ${REGISTRY} \
             --arg auth $(echo -n "${USERNAME}:${PASSWORD}" | base64) \
             '.auths += {($registry): {'auth': $auth}}' \
     >"${DOCKER_CONFIG}/config.json"
