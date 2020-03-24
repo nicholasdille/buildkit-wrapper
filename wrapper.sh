@@ -1,3 +1,70 @@
+docker_usage() {
+    cat <<EOF
+
+Usage: docker [COMMAND]
+
+This is the convenience wrapper for buildctl to mimic the behaviour
+of docker CLI. Note that not all subcommands and parameters are
+supported.
+
+Commands:
+  build       Build an image from a Dockerfile
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+
+Run 'docker COMMAND --help' for more information on a command.
+EOF
+}
+
+docker_build_usage() {
+    cat <<EOF
+
+Usage: docker build [OPTIONS] PATH | URL
+
+This is the convenience wrapper for buildctl to mimic the behaviour
+of docker CLI. Note that not all subcommands and parameters are
+supported.
+
+Build an image from a Dockerfile
+
+Options:
+      --build-arg list   Set build-time variables
+      --cache-from       Images to consider as cache sources
+  -f, --file string      Name of the Dockerfile (Default is 'PATH/Dockerfile')
+  -t, --tag list         Name and optionally a tag in the 'name:tag' format
+      --target string    Set the target build stage to build.
+EOF
+}
+
+docker_login_usage() {
+    cat <<EOF
+
+Usage:  docker login [OPTIONS] [SERVER]
+
+This is the convenience wrapper for buildctl to mimic the behaviour
+of docker CLI. Note that not all subcommands and parameters are
+supported.
+
+Log in to a Docker registry.
+If no server is specified, the default is defined by the daemon.
+
+Options:
+  -p, --password string   Password
+      --password-stdin    Take the password from stdin
+  -u, --username string   Username
+EOF
+}
+
+docker_logout_usage() {
+    cat <<EOF
+
+Usage:  docker logout [SERVER]
+
+Log out from a Docker registry.
+If no server is specified, the default is defined by the daemon.
+EOF
+}
+
 docker() {
     case "$1" in
         build)
@@ -13,15 +80,16 @@ docker() {
             docker_logout "$@"
             ;;
         *)
-            echo "Usage: docker login|build|logout"
+            docker_usage
             return 1
             ;;
     esac
 }
 
 docker_build() {
-    if [[ "$#" -lt 1 ]]; then
-        echo "Usage: docker build <context>"
+    if [[ "$#" -eq 0 ]]; then
+        docker_build_usage
+        return
     fi
 
     DOCKER_BUILD_FILE=./Dockerfile
@@ -43,8 +111,13 @@ docker_build() {
             --)
                 break
                 ;;
+            --help)
+                docker_build_usage
+                return
+                ;;
             --*|-*)
-                echo "Error: Unknown parameter $1"
+                echo "unknown flag: $1"
+                echo "See 'docker build --help'."
                 return 1
                 ;;
             *)
@@ -53,11 +126,6 @@ docker_build() {
         esac
         shift
     done
-
-    #echo DOCKER_BUILD_FILE=${DOCKER_BUILD_FILE}
-    #echo DOCKER_BUILD_CONTEXT=${DOCKER_BUILD_CONTEXT}
-    #echo DOCKER_BUILD_TAG=${DOCKER_BUILD_TAG}
-    #echo DOCKER_BUILD_ARG=${DOCKER_BUILD_ARG[*]}
 
     DOCKER_BUILD_ARGS=""
     for INDEX in ${!DOCKER_BUILD_ARG[@]}; do
@@ -79,14 +147,6 @@ docker_build() {
 }
 
 docker_login() {
-    : "${DOCKER_CONFIG:=${HOME}/.docker}"
-    mkdir -p "${DOCKER_CONFIG}"
-    if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
-        CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
-    else
-        CONFIG='{"auths":{}}'
-    fi
-
     USERNAME=""
     PASSWORD=""
     while [[ "$#" -gt 0 ]]; do
@@ -122,6 +182,14 @@ docker_login() {
         echo
     fi
 
+    : "${DOCKER_CONFIG:=${HOME}/.docker}"
+    mkdir -p "${DOCKER_CONFIG}"
+    if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
+        CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
+    else
+        CONFIG='{"auths":{}}'
+    fi
+
     echo "${CONFIG}" | \
         jq \
             --arg registry ${REGISTRY} \
@@ -134,19 +202,23 @@ docker_login() {
 }
 
 docker_logout() {
+    case "$1" in
+        --help)
+            docker_logout_usage
+            return
+            ;;
+        *)
+            REGISTRY=$1
+            ;;
+    esac
+    : "${REGISTRY:="https://index.docker.io/v1/"}"
+
     : "${DOCKER_CONFIG:=${HOME}/.docker}"
     mkdir -p "${DOCKER_CONFIG}"
     if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
         CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
     fi
 
-    if [[ -n "$1" ]]; then
-        REGISTRY=$1
-    else
-        REGISTRY=https://index.docker.io/v1/
-    fi
-
-    : "${REGISTRY:=index.docker.io}"
     echo "${CONFIG}" | \
         jq \
             --arg registry ${REGISTRY} \
