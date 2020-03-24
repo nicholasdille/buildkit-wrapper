@@ -98,7 +98,7 @@ docker_build() {
         case "$1" in
             --file|-f)
                 shift
-                DOCKER_BUILD_FILE=$1
+                DOCKER_BUILD_FILE=$(dirname $1)
                 ;;
             --build-arg)
                 shift
