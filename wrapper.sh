@@ -112,6 +112,10 @@ docker_build() {
                 shift
                 DOCKER_BUILD_TARGET=$1
                 ;;
+            --cache-from)
+                shift
+                DOCKER_BUILD_CACHE_FROM=$1
+                ;;
             --)
                 break
                 ;;
@@ -141,6 +145,11 @@ docker_build() {
         DOCKER_BUILD_TARGET_PARAM="--opt target:${DOCKER_BUILD_TARGET}"
     fi
 
+    DOCKER_BUILD_CACHE_FROM_PARAM=""
+    if [[ -n "${DOCKER_BUILD_CACHE_FROM}" ]]; then
+        DOCKER_BUILD_CACHE_FROM_PARAM="--import-cache type=registry,ref=${DOCKER_BUILD_CACHE_FROM}"
+    fi
+
     DOCKER_BUILD_NAME=""
     if [[ -n "${DOCKER_BUILD_TAG}" ]]; then
         DOCKER_BUILD_NAME="--output type=image,name=${DOCKER_BUILD_TAG},push=true"
@@ -152,6 +161,7 @@ docker_build() {
         --local dockerfile=${DOCKER_BUILD_FILE} \
         $DOCKER_BUILD_ARGS \
         ${DOCKER_BUILD_TARGET_PARAM} \
+        ${DOCKER_BUILD_CACHE_FROM_PARAM} \
         --export-cache type=inline \
         $DOCKER_BUILD_NAME
 }
