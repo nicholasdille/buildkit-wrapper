@@ -122,10 +122,6 @@ docker_login() {
         echo
     fi
 
-    echo REGISTRY=${REGISTRY}
-    echo USERNAME=${USERNAME}
-    echo PASSWORD=${PASSWORD}
-
     echo "${CONFIG}" | \
         jq \
             --arg registry ${REGISTRY} \
