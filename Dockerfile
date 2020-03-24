@@ -5,7 +5,7 @@ USER root
 RUN apk add --update-cache --no-cache --virtual temp curl jq \
  && curl -s https://api.github.com/repos/tianon/gosu/releases/latest | \
         jq --raw-output '.assets[] | select(.name == "gosu-amd64") | .browser_download_url' | \
-        xargs curl -sLfo /usr/local/bin/gosu \
+        xargs --no-run-if-empty curl -sLfo /usr/local/bin/gosu \
  && chmod +x /usr/local/bin/gosu \
  && apk del temp
 COPY entrypoint.sh /
