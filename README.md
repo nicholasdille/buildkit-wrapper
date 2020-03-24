@@ -10,6 +10,20 @@ Start server:
 docker run -d --name buildkitd --security-opt apparmor=unconfined --security-opt seccomp=unconfined nicholasdille/buildkit:rootless
 ```
 
+Enter container:
+
+```bash
+docker exec -it buildkitd sh
+```
+
+## Usage as a sidecar
+
+Start server:
+
+```bash
+docker run -d --name buildkitd --security-opt apparmor=unconfined --security-opt seccomp=unconfined nicholasdille/buildkit:rootless
+```
+
 Start client:
 
 ```bash
