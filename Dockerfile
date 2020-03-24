@@ -1,6 +1,7 @@
 FROM moby/buildkit:rootless
 ENV uid=1000 \
-    gid=1000
+    gid=1000 \
+    BUILDKIT_HOST=tcp://127.0.0.1:1248
 USER root
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >>/etc/apk/repositories \
  && apk add --update-cache --no-cache bash jq gosu@testing
