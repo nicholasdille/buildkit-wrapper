@@ -80,6 +80,7 @@ docker_build() {
 
 docker_login() {
     : "${DOCKER_CONFIG:=${HOME}/.docker}"
+    mkdir -p "${DOCKER_CONFIG}"
     if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
         CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
     else
@@ -134,6 +135,7 @@ docker_login() {
 
 docker_logout() {
     : "${DOCKER_CONFIG:=${HOME}/.docker}"
+    mkdir -p "${DOCKER_CONFIG}"
     if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
         CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
     fi
