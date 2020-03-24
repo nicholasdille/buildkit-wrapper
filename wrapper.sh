@@ -92,7 +92,6 @@ docker_build() {
         return
     fi
 
-    DOCKER_BUILD_FILE=./Dockerfile
     declare -a DOCKER_BUILD_ARG
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
@@ -134,6 +133,7 @@ docker_build() {
         esac
         shift
     done
+    : "${DOCKER_BUILD_FILE:=${DOCKER_BUILD_CONTEXT}}"
 
     DOCKER_BUILD_ARGS=""
     for INDEX in ${!DOCKER_BUILD_ARG[@]}; do
