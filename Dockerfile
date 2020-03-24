@@ -9,6 +9,6 @@ RUN apk add --update-cache --no-cache --virtual temp curl jq \
  && chmod +x /usr/local/bin/gosu \
  && apk del temp
 COPY entrypoint.sh /
-COPY wrapper.sh /
+COPY wrapper.sh /etc/profile.d/
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "--oci-worker-no-process-sandbox", "--addr", "tcp://127.0.0.1:1248" ]
