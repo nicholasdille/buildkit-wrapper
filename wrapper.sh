@@ -119,6 +119,7 @@ docker_login() {
     fi
     if [[ -z "${PASSWORD}" ]]; then
         read -s -p "Password: " PASSWORD
+        echo
     fi
 
     echo REGISTRY=${REGISTRY}
