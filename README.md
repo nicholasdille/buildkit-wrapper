@@ -13,7 +13,7 @@ docker run -d --name buildkitd --security-opt apparmor=unconfined --security-opt
 Enter server container:
 
 ```bash
-docker exec -it --user user:user buildkitd sh
+docker exec -it --user user:user buildkitd bash
 ```
 
 ## Usage as a sidecar
@@ -27,5 +27,5 @@ docker run -d --name buildkitd --security-opt apparmor=unconfined --security-opt
 Start client container:
 
 ```bash
-docker run -it --rm --entrypoint sh --network container:buildkitd --env BUILDKIT_HOST=tcp://127.0.0.1:1248 nicholasdille/buildkit:rootless
+docker run -it --rm --entrypoint bash --network container:buildkitd --env BUILDKIT_HOST=tcp://127.0.0.1:1248 nicholasdille/buildkit:rootless
 ```
