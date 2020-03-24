@@ -8,7 +8,7 @@ deluser user
 #if ! grep -q ":x:${uid}:" /etc/passwd; then
     adduser -u ${uid} -D -G user user
 #fi
-echo "alias docker=/wrapper.sh" >/home/user/.bashrc
+echo "source /wrapper.sh" >/home/user/.bashrc
 chown user:user /home/user/.bashrc
 
 exec gosu ${uid}:${gid} rootlesskit buildkitd "$@"
