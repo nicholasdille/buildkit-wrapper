@@ -92,7 +92,18 @@ docker_build() {
         return
     fi
 
-    declare -a DOCKER_BUILD_ARG
+    local DOCKER_BUILD_FILE
+    local DOCKER_BUILD_ARG
+    local DOCKER_BUILD_TAG
+    local DOCKER_BUILD_TARGET
+    local DOCKER_BUILD_CACHE_FROM
+    local DOCKER_BUILD_CONTEXT
+    DOCKER_BUILD_FILE=""
+    DOCKER_BUILD_ARG=()
+    DOCKER_BUILD_TAG=""
+    DOCKER_BUILD_TARGET=""
+    DOCKER_BUILD_CACHE_FROM=""
+    DOCKER_BUILD_CONTEXT=""
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             --file|-f)
@@ -135,21 +146,25 @@ docker_build() {
     done
     : "${DOCKER_BUILD_FILE:=${DOCKER_BUILD_CONTEXT}}"
 
+    local DOCKER_BUILD_ARGS
     DOCKER_BUILD_ARGS=""
     for INDEX in ${!DOCKER_BUILD_ARG[@]}; do
         DOCKER_BUILD_ARGS="${DOCKER_BUILD_ARGS} --opt build-arg:${DOCKER_BUILD_ARG[$INDEX]}"
     done
 
+    local DOCKER_BUILD_TARGET_PARAM
     DOCKER_BUILD_TARGET_PARAM=""
     if [[ -n "${DOCKER_BUILD_TARGET}" ]]; then
         DOCKER_BUILD_TARGET_PARAM="--opt target:${DOCKER_BUILD_TARGET}"
     fi
 
+    local DOCKER_BUILD_CACHE_FROM_PARAM
     DOCKER_BUILD_CACHE_FROM_PARAM=""
     if [[ -n "${DOCKER_BUILD_CACHE_FROM}" ]]; then
         DOCKER_BUILD_CACHE_FROM_PARAM="--import-cache type=registry,ref=${DOCKER_BUILD_CACHE_FROM}"
     fi
 
+    local DOCKER_BUILD_NAME
     DOCKER_BUILD_NAME=""
     if [[ -n "${DOCKER_BUILD_TAG}" ]]; then
         DOCKER_BUILD_NAME="--output type=image,name=${DOCKER_BUILD_TAG},push=true"
@@ -167,8 +182,12 @@ docker_build() {
 }
 
 docker_login() {
+    local USERNAME
+    local PASSWORD
+    local REGISTRY
     USERNAME=""
     PASSWORD=""
+    REGISTRY=""
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             -u|--username)
@@ -222,6 +241,7 @@ docker_login() {
 }
 
 docker_logout() {
+    local REGISTRY
     case "$1" in
         --help)
             docker_logout_usage
