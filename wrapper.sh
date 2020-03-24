@@ -148,5 +148,9 @@ docker_logout() {
     fi
 
     : "${REGISTRY:=index.docker.io}"
-    echo "${CONFIG}" | jq "delpaths([[\"auths\", \"${REGISTRY}\"]])" >"${DOCKER_CONFIG}/config.json"
+    echo "${CONFIG}" | \
+        jq \
+            --arg registry ${REGISTRY} \
+            'delpaths([["auths", ($registry)]])' \
+    >"${DOCKER_CONFIG}/config.json"
 }
