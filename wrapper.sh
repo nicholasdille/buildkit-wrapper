@@ -84,7 +84,7 @@ docker_login() {
     if [[ -f "${DOCKER_CONFIG}/config.json" ]]; then
         CONFIG=$(cat "${DOCKER_CONFIG}/config.json")
     else
-        CONFIG="{'auths':{}}"
+        CONFIG='{"auths":{}}'
     fi
 
     USERNAME=""
