@@ -108,6 +108,10 @@ docker_build() {
                 shift
                 DOCKER_BUILD_TAG=$1
                 ;;
+            --target)
+                shift
+                DOCKER_BUILD_TARGET=$1
+                ;;
             --)
                 break
                 ;;
@@ -132,6 +136,11 @@ docker_build() {
         DOCKER_BUILD_ARGS="${DOCKER_BUILD_ARGS} --opt build-arg:${DOCKER_BUILD_ARG[$INDEX]}"
     done
 
+    DOCKER_BUILD_TARGET_PARAM=""
+    if [[ -n "${DOCKER_BUILD_TARGET}" ]]; then
+        DOCKER_BUILD_TARGET_PARAM="-opt target:${DOCKER_BUILD_TARGET}"
+    fi
+
     DOCKER_BUILD_NAME=""
     if [[ -n "${DOCKER_BUILD_TAG}" ]]; then
         DOCKER_BUILD_NAME="--output type=image,name=${DOCKER_BUILD_TAG},push=true"
@@ -142,6 +151,7 @@ docker_build() {
         --local context=${DOCKER_BUILD_CONTEXT} \
         --local dockerfile=${DOCKER_BUILD_FILE} \
         $DOCKER_BUILD_ARGS \
+        ${DOCKER_BUILD_TARGET_PARAM} \
         --export-cache type=inline \
         $DOCKER_BUILD_NAME
 }
