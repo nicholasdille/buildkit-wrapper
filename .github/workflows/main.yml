@@ -15,7 +15,9 @@ jobs:
     - uses: docker/build-push-action@v1.0
       with:
         repository: nicholasdille/buildkit
-        tag: rootless
+        tags: rootless
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
+        add_git_labels: true
+        always_pull: true
         
